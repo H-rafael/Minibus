@@ -2,6 +2,7 @@
 <?php
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 $this->need('header.php');
+include 'fun.php';
 $this->widget('Widget_Contents_Post_Recent','pageSize=7')->to($post);
 
 
@@ -35,12 +36,12 @@ $this->widget('Widget_Contents_Post_Recent','pageSize=7')->to($post);
     <div class="section">
         <div class="images" >
             <div id="jg">
-                <a class="zoom icon-zoom" target="_blank" href="https://wx1.sbimg.cn/2019/09/04/wallhaven-635742.jpg"><img width="300" height="169" src="http://bl.cc/usr/themes/Minibus/timthumb/timthumb.php?src=https://wx1.sbimg.cn/2019/09/04/wallhaven-635742.jpg"/></a>
-                <a class="zoom icon-zoom" target="_blank" href="https://wx1.sbimg.cn/2019/09/04/wallhaven-634995.jpg"><img width="300" height="126" src="http://bl.cc/usr/themes/Minibus/timthumb/timthumb.php?src=https://wx1.sbimg.cn/2019/09/04/wallhaven-634995.jpg"/></a>
-                <a class="zoom icon-zoom" target="_blank" href="https://wx1.sbimg.cn/2019/09/04/wallhaven-634689.jpg"><img width="300" height="169" src="http://bl.cc/usr/themes/Minibus/timthumb/timthumb.php?src=https://wx1.sbimg.cn/2019/09/04/wallhaven-634689.jpg"/></a>
-                <a class="zoom icon-zoom" target="_blank" href="https://wx2.sbimg.cn/2019/09/04/wallhaven-634613.jpg"><img width="300" height="144" src="http://bl.cc/usr/themes/Minibus/timthumb/timthumb.php?src=https://wx2.sbimg.cn/2019/09/04/wallhaven-634613.jpg"/></a>
-                <a class="zoom icon-zoom" target="_blank" href="https://wx2.sbimg.cn/2019/04/12/accd193bgy1g0f5u34pqkj21cf0u0tn6.jpg"><img width="300" height="200" src="http://bl.cc/usr/themes/Minibus/timthumb/timthumb.php?src=https://wx2.sbimg.cn/2019/04/12/accd193bgy1g0f5u34pqkj21cf0u0tn6.jpg"/></a>
-                <a class="zoom icon-zoom" target="_blank" href="https://wx2.sbimg.cn/2019/04/12/ac1a0c4agy1ftz7i6u1gxj21hc0u0tyk.jpg"><img width="300" height="164" src="http://bl.cc/usr/themes/Minibus/timthumb/timthumb.php?src=https://wx2.sbimg.cn/2019/04/12/ac1a0c4agy1ftz7i6u1gxj21hc0u0tyk.jpg"/></a>
+                <a class="zoom icon-zoom" target="_blank" href="https://wx1.sbimg.cn/2019/09/04/wallhaven-635742.jpg"><img width="300" height="169" src="<?php echo 'http://'.$_SERVER['HTTP_HOST']?>/usr/themes/Minibus/timthumb/timthumb.php?src=https://wx1.sbimg.cn/2019/09/04/wallhaven-635742.jpg"/></a>
+                <a class="zoom icon-zoom" target="_blank" href="https://wx1.sbimg.cn/2019/09/04/wallhaven-634995.jpg"><img width="300" height="126" src="<?php echo 'http://'.$_SERVER['HTTP_HOST']?>/usr/themes/Minibus/timthumb/timthumb.php?src=https://wx1.sbimg.cn/2019/09/04/wallhaven-634995.jpg"/></a>
+                <a class="zoom icon-zoom" target="_blank" href="https://wx1.sbimg.cn/2019/09/04/wallhaven-634689.jpg"><img width="300" height="169" src="<?php echo 'http://'.$_SERVER['HTTP_HOST']?>/usr/themes/Minibus/timthumb/timthumb.php?src=https://wx1.sbimg.cn/2019/09/04/wallhaven-634689.jpg"/></a>
+                <a class="zoom icon-zoom" target="_blank" href="https://wx2.sbimg.cn/2019/09/04/wallhaven-634613.jpg"><img width="300" height="144" src="<?php echo 'http://'.$_SERVER['HTTP_HOST']?>/usr/themes/Minibus/timthumb/timthumb.php?src=https://wx2.sbimg.cn/2019/09/04/wallhaven-634613.jpg"/></a>
+                <a class="zoom icon-zoom" target="_blank" href="https://wx2.sbimg.cn/2019/04/12/accd193bgy1g0f5u34pqkj21cf0u0tn6.jpg"><img width="300" height="200" src="<?php echo 'http://'.$_SERVER['HTTP_HOST']?>/usr/themes/Minibus/timthumb/timthumb.php?src=https://wx2.sbimg.cn/2019/04/12/accd193bgy1g0f5u34pqkj21cf0u0tn6.jpg"/></a>
+                <a class="zoom icon-zoom" target="_blank" href="https://wx2.sbimg.cn/2019/04/12/ac1a0c4agy1ftz7i6u1gxj21hc0u0tyk.jpg"><img width="300" height="164" src="<?php echo 'http://'.$_SERVER['HTTP_HOST']?>/usr/themes/Minibus/timthumb/timthumb.php?src=https://wx2.sbimg.cn/2019/04/12/ac1a0c4agy1ftz7i6u1gxj21hc0u0tyk.jpg"/></a>
             </div>
 
 
@@ -60,7 +61,13 @@ $this->widget('Widget_Contents_Post_Recent','pageSize=7')->to($post);
                 </div>
 
                 <div class="content">
+
                     <?php $this->content(); ?>
+                    <div id="content_pic"></div>
+                    <input name="submit" type="submit" onclick="load_content(this)" class="submit" value="点击继续加载">
+                    <input name="sum" type=""  class="load_content_sum" value="2">
+                    <?php cartoon($this->fields->cartoon);?>
+
                     <!--[if lt IE 9] -->
                     <script>document.createElement('audio');</script>
                     <!-- [endif]-->
@@ -100,7 +107,7 @@ $this->widget('Widget_Contents_Post_Recent','pageSize=7')->to($post);
                             ?></p>
                     </div>
                     <a href="<?php $post->permalink() ?>" data-id="<?php $post->cid()?>" title="<?php $post->title() ?>" style=" float: right;">
-                        <img class="relateimg" style="width: 189px;height: 106px;" src="http://bl.cc/usr/themes/Minibus/timthumb/timthumb.php?src=<?php if($post->fields->thumbnail) $post->fields->thumbnail(); else echo getThumbnail(); ?>" alt="<?php $post->title() ?>" />
+                        <img class="relateimg" style="width: 189px;height: 106px;" src="<?php echo 'http://'.$_SERVER['HTTP_HOST']?>/usr/themes/Minibus/timthumb/timthumb.php?src=<?php if($post->fields->thumbnail) $post->fields->thumbnail(); else echo getThumbnail(); ?>" alt="<?php $post->title() ?>" />
                     </a>
                 </li>
             <?php endwhile; ?>
@@ -109,6 +116,58 @@ $this->widget('Widget_Contents_Post_Recent','pageSize=7')->to($post);
 </div>
 <?php $this->need('footer.php');?>
 <script type="text/javascript">
+//    function load_content() {
+//        var load_content_sum = $('.load_content_sum').val();
+//        var sum = parseInt(load_content_sum) + 2;
+//        $('.load_content_sum').val(sum);
+//        communal(sum);
+//        $.post('fun.php',{sum:sum},function () {
+//
+//        })
+//
+//    }
+
+//    function communal(sum_c) {
+        var cartoon = '<?php echo cartoon($this->fields->cartoon) ?>';
+        var object = JSON.parse(cartoon);//转化
+        $.each(object,function(k,val){
+            $.each(val,function(k_l,v_l){
+                $('#content_pic').append('<img src="'+v_l+'">') // 修改为你自己的头像标签
+            });
+        });
+
+//    }
+    function changeURLArg(url, arg, arg_val) {
+        /// <summary>
+        /// url参数替换值
+        /// </summary>
+        /// <param name="url">目标url </param>
+        /// <param name="arg">需要替换的参数名称</param>
+        ///<param name="arg_val">替换后的参数的值</param>
+        /// <returns>参数替换后的url </returns>
+        var pattern = arg + '=([^&]*)';
+        var replaceText = arg + '=' + arg_val;
+        if (url.match(pattern)) {
+            var tmp = '/(' + arg + '=)([^&]*)/gi';
+            tmp = url.replace(eval(tmp), replaceText);
+            return tmp;
+        } else {
+            if (url.match('[\?]')) {
+                return url + '&' + replaceText;
+            } else {
+                return url + '?' + replaceText;
+            }
+        }
+        return url + '\n' + arg + '\n' + arg_val;
+    }
+    //获取url中的参数
+    function getUrlParam(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+        var r = window.location.search.substr(1).match(reg); //匹配目标参数
+        if (r != null) return unescape(r[2]); return null; //返回参数值
+    }
+
+
     $('.icon-images').click(function(){//点击a标签
         console.log($('#jg').is(':hidden'));
         if($('.images').is(':hidden')){//如果当前隐藏

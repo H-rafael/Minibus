@@ -174,10 +174,12 @@ function themeFields($layout)
     $thumbnail = new Typecho_Widget_Helper_Form_Element_Text('thumbnail', null, null, _t('文章/页面缩略图Url'), _t('需要带上http(s)://， 默认会调用主题img目录下的thumnail.jpg'));
     $previewContent = new Typecho_Widget_Helper_Form_Element_Text('previewContent', null, null, _t('文章预览内容'), _t('设置文章的预览内容，留空自动截取文章前300个字。'));
     $music = new Typecho_Widget_Helper_Form_Element_Text('music', null, null, _t('音乐地址'), _t('设置音乐地址比如：https://music.163.com/#/song?id=27575583。'));
+    $cartoon = new Typecho_Widget_Helper_Form_Element_Text('cartoon', null, null, _t('漫画地址'), _t('设置漫画地址比如：https://m.zymk.cn/3662/。'));
 
     $layout->addItem($thumbnail);
     $layout->addItem($previewContent);
     $layout->addItem($music);
+    $layout->addItem($cartoon);
 }
 
 function themeInit($archive)
@@ -395,6 +397,83 @@ function getPostView($archive)
     }
     echo $row['views'];
 }
+
+function cartoon($url,$sum_c=1){
+    $url = !empty($_GET['cartoon']) ? $_GET['cartoon'] : $url;
+//    if(isset($_GET['action']) && $_GET['action'] == 'ajax_avatar_get'){
+    if(!empty($url)){
+        set_time_limit(0);
+        $html=file_get_contents($url);
+        preg_match_all("/<ul class=\"chapterlist\".*?>.*?<\/ul>/ism",$html,$out);
+        preg_match_all("/<a(s*[^>]+s*)href=([\"|']?)([^\"'>\s]+)([\"|']?)/ies",$out[0][0],$out_href);
+        preg_match_all("/<a(s*[^>]+s*)title=([\"|']?)([^\"'>\s]+)([\"|']?)/ies",$out[0][0],$out_title);
+        //地址
+        $adder_url = $out_href['3'];
+        //名称
+        $arr_name = $out_title['3'];
+        //获取列表
+        $arr_href_sort =[];
+        $i =1;
+        foreach ($adder_url as $k => $v){
+            $arr_href_sort[$i++] =['name'=>$arr_name[$k],'url'=> $url.$v];
+        }
+        krsort($arr_href_sort);
+        $arr_href = [];
+        $o = 1;
+        foreach ($arr_href_sort as $k_sort => $v_sort){
+            $arr_href[$o++] = $v_sort;
+        }
+        $arr_href_img =[];
+        for($j=1 ; $j <= count($arr_href) ;$j++){
+//            if($j <= $sum_c){
+                $arr_href_img[] = $arr_href[$j];
+//            }
+        }
+
+        //获取明细
+        $arr_pic =[];
+        foreach ($arr_href_img as $k_img => $v_imp){
+            $html_imp =file_get_contents($v_imp['url']);
+            preg_match_all("/<span class=\"total-page\">([\"|']?)([^\"'>\s]+)([\"|']?)<\/span>/ies",$html_imp,$page_num,PREG_PATTERN_ORDER);
+            //获取分页数量
+            $res_page_num = $page_num[2][0];
+            preg_match_all("/<script.*?>([\s\S]+?)<\/script>/ism",$html_imp,$script,PREG_PATTERN_ORDER);
+
+            $middle = explode("middle:",$script[0][2]);
+            $middle_url =  explode(",",$middle[1]);
+            $chapter_addr_original = str_replace(['"','chapter_addr_original:'],'',$middle_url[3]);
+            $comic_size = str_replace(['"','comic_size:'],'',$middle_url[9]);
+            $res_list =[];
+            for($i=1;$i<=$res_page_num;$i++){
+                $img_url = 'http://mhpic.zymkcdn.com/comic/'.$chapter_addr_original.$i.'.jpg'.$comic_size;
+                if(!empty($img_url)){
+//                    echo '<img src="'.$img_url.'">';
+                }
+                $res_list[$i]= $img_url;
+            }
+            $arr_pic[] = $res_list;
+        }
+//        print_r(json_encode($arr_pic,JSON_UNESCAPED_UNICODE));
+        return json_encode($arr_pic,JSON_UNESCAPED_UNICODE);
+//    }
+    }
+
+}
+
+
+//function themeInit($archive)
+//{
+//    if(isset($_GET['action']) == 'ajax_avatar_get' && 'GET' == $_SERVER['REQUEST_METHOD'] ) {
+//        $host = 'https://secure.gravatar.com/avatar/';
+//        $email = strtolower( $_GET['email']);
+//        $hash = md5($email);
+//        $sjtx = 'mm';
+//        $avatar = $host . $hash . '?d='.$sjtx;
+//        echo $avatar;
+//        die();
+//    }else { return; }
+//}
+
 /**
  * 根据$coid获取链接
  */
