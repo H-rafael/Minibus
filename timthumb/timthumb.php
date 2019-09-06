@@ -73,11 +73,9 @@ if(! defined('DEFAULT_HEIGHT') )			define ('DEFAULT_HEIGHT', 100);							// Defa
 //These are now disabled by default because the file sizes of PNGs (and GIFs) are much smaller than we used to generate. 
 //They only work for PNGs. GIFs and JPEGs are not affected.
 if(! defined('OPTIPNG_ENABLED') ) 		define ('OPTIPNG_ENABLED', false);  
-//if(! defined('OPTIPNG_PATH') ) 			define ('OPTIPNG_PATH', '/usr/bin/optipng'); //This will run first because it gives better compression than pngcrush.
-if(! defined('OPTIPNG_PATH') ) 			define ('OPTIPNG_PATH', '/usr/local/optipng'); //This will run first because it gives better compression than pngcrush.
-if(! defined('PNGCRUSH_ENABLED') ) 		define ('PNGCRUSH_ENABLED', false);
-//if(! defined('PNGCRUSH_PATH') ) 		define ('PNGCRUSH_PATH', '/usr/bin/pngcrush'); //This will only run if OPTIPNG_PATH is not set or is not valid
-if(! defined('PNGCRUSH_PATH') ) 		define ('PNGCRUSH_PATH', '/usr/local/pngcrush'); //This will only run if OPTIPNG_PATH is not set or is not valid
+if(! defined('OPTIPNG_PATH') ) 			define ('OPTIPNG_PATH', '/usr/bin/optipng'); //This will run first because it gives better compression than pngcrush. 
+if(! defined('PNGCRUSH_ENABLED') ) 		define ('PNGCRUSH_ENABLED', false); 
+if(! defined('PNGCRUSH_PATH') ) 		define ('PNGCRUSH_PATH', '/usr/bin/pngcrush'); //This will only run if OPTIPNG_PATH is not set or is not valid
 
 /*
 	-------====Website Screenshots configuration - BETA====-------
@@ -144,14 +142,8 @@ if(! isset($ALLOWED_SITES)){
 		'imgur.com',
 		'imageshack.us',
 		'tinypic.com',
-		'wx2.sbimg.cn',
-		'ws1.sinaimg.cn',
-		'wx1.sbimg.cn',
-		'qqexit.com',
-		'isujin.com',
 	);
 }
-
 // -------------------------------------------------------------
 // -------------- STOP EDITING CONFIGURATION HERE --------------
 // -------------------------------------------------------------
@@ -159,7 +151,6 @@ if(! isset($ALLOWED_SITES)){
 timthumb::start();
 
 class timthumb {
-
 	protected $src = "";
 	protected $is404 = false;
 	protected $docRoot = "";
@@ -187,9 +178,9 @@ class timthumb {
                 return;
             }
         }
+
 		$tim = new timthumb();
 		$tim->handleErrors();
-
 		$tim->securityChecks();
 		if($tim->tryBrowserCache()){
 			exit(0);
@@ -201,34 +192,25 @@ class timthumb {
 		$tim->handleErrors();
 		$tim->run();
 		$tim->handleErrors();
-
 		exit(0);
 	}
 	public function __construct(){
-
-        global $ALLOWED_SITES;
+		global $ALLOWED_SITES;
 		$this->startTime = microtime(true);
 		date_default_timezone_set('UTC');
 		$this->debug(1, "Starting new request from " . $this->getIP() . " to " . $_SERVER['REQUEST_URI']);
 		$this->calcDocRoot();
-
-
-        //On windows systems I'm assuming fileinode returns an empty string or a number that doesn't change. Check this.
+		//On windows systems I'm assuming fileinode returns an empty string or a number that doesn't change. Check this.
 		$this->salt = @filemtime(__FILE__) . '-' . @fileinode(__FILE__);
 		$this->debug(3, "Salt is: " . $this->salt);
-
 		if(FILE_CACHE_DIRECTORY){
-
 			if(! is_dir(FILE_CACHE_DIRECTORY)){
-
 				@mkdir(FILE_CACHE_DIRECTORY);
 				if(! is_dir(FILE_CACHE_DIRECTORY)){
 					$this->error("Could not create the file cache directory.");
-
 					return false;
 				}
 			}
-
 			$this->cacheDirectory = FILE_CACHE_DIRECTORY;
 			if (!touch($this->cacheDirectory . '/index.html')) {
 				$this->error("Could not create the index.html file - to fix this create an empty file named index.html file in the cache directory.");
@@ -236,8 +218,6 @@ class timthumb {
 		} else {
 			$this->cacheDirectory = sys_get_temp_dir();
 		}
-
-
 		//Clean the cache before we do anything because we don't want the first visitor after FILE_CACHE_TIME_BETWEEN_CLEANS expires to get a stale image. 
 		$this->cleanCache();
 		
@@ -245,7 +225,7 @@ class timthumb {
 		$this->src = $this->param('src');
 		$this->url = parse_url($this->src);
 		$this->src = preg_replace('/https?:\/\/(?:www\.)?' . $this->myHost . '/i', '', $this->src);
-
+		
 		if(strlen($this->src) <= 3){
 			$this->error("No image specified");
 			return false;
@@ -269,24 +249,20 @@ class timthumb {
 		} else {
 			$this->debug(2, "Is a request for an internal file: " . $this->src);
 		}
-
 		if($this->isURL && (! ALLOW_EXTERNAL)){
 			$this->error("You are not allowed to fetch images from an external website.");
 			return false;
 		}
-
 		if($this->isURL){
 			if(ALLOW_ALL_EXTERNAL_SITES){
 				$this->debug(2, "Fetching from all external sites is enabled.");
 			} else {
 				$this->debug(2, "Fetching only from selected external sites is enabled.");
 				$allowed = false;
-
-                foreach($ALLOWED_SITES as $site){
-
-                    if ((strtolower(substr($this->url['host'],-strlen($site)-1)) === strtolower(".$site")) || (strtolower($this->url['host'])===strtolower($site))) {
+				foreach($ALLOWED_SITES as $site){
+					if ((strtolower(substr($this->url['host'],-strlen($site)-1)) === strtolower(".$site")) || (strtolower($this->url['host'])===strtolower($site))) {
 						$this->debug(3, "URL hostname {$this->url['host']} matches $site so allowing.");
-                        $allowed = true;
+						$allowed = true;
 					}
 				}
 				if(! $allowed){
@@ -314,9 +290,9 @@ class timthumb {
 			$this->cachefile = $this->cacheDirectory . '/' . FILE_CACHE_PREFIX . $cachePrefix . md5($this->salt . $this->localImageMTime . $_SERVER ['QUERY_STRING'] . $this->fileCacheVersion) . FILE_CACHE_SUFFIX;
 		}
 		$this->debug(2, "Cache file is: " . $this->cachefile);
+
 		return true;
 	}
-
 	public function __destruct(){
 		foreach($this->toDeletes as $del){
 			$this->debug(2, "Deleting temp file $del");
@@ -325,14 +301,12 @@ class timthumb {
 	}
 	public function run(){
 		if($this->isURL){
-
 			if(! ALLOW_EXTERNAL){
 				$this->debug(1, "Got a request for an external image but ALLOW_EXTERNAL is disabled so returning error msg.");
 				$this->error("You are not allowed to fetch images from an external website.");
 				return false;
 			}
 			$this->debug(3, "Got request for external image. Starting serveExternalImage.");
-
 			if($this->param('webshot')){
 				if(WEBSHOT_ENABLED){
 					$this->debug(3, "webshot param is set, so we're going to take a webshot.");
@@ -349,7 +323,6 @@ class timthumb {
 			$this->debug(3, "Got request for internal image. Starting serveInternalImage()");
 			$this->serveInternalImage();
 		}
-
 		return true;
 	}
 	protected function handleErrors(){
@@ -893,7 +866,6 @@ class timthumb {
 	}
 	protected function getLocalImagePath($src){
 		$src = ltrim($src, '/'); //strip off the leading '/'
-
 		if(! $this->docRoot){
 			$this->debug(3, "We have no document root set, so as a last resort, lets check if the image is in the current dir and serve that.");
 			//We don't support serving images outside the current dir if we don't have a doc root for security reasons.
@@ -1215,7 +1187,6 @@ class timthumb {
 	protected function getURL($url, $tempfile){
 		$this->lastURLError = false;
 		$url = preg_replace('/ /', '%20', $url);
-
 		if(function_exists('curl_init')){
 			$this->debug(3, "Curl is installed so using it to fetch URL.");
 			self::$curlFH = fopen($tempfile, 'w');
@@ -1225,21 +1196,19 @@ class timthumb {
 			}
 			self::$curlDataWritten = 0;
 			$this->debug(3, "Fetching url with curl: $url");
-
 			$curl = curl_init($url);
-            curl_setopt ($curl, CURLOPT_TIMEOUT, CURL_TIMEOUT);
-            curl_setopt ($curl, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.122 Safari/534.30");
-            curl_setopt ($curl, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt ($curl, CURLOPT_HEADER, 0);
-            curl_setopt ($curl, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-            curl_setopt ($curl, CURLOPT_WRITEFUNCTION, 'timthumb::curlWrite');
-            @curl_setopt ($curl, CURLOPT_FOLLOWLOCATION, true);
-            @curl_setopt ($curl, CURLOPT_MAXREDIRS, 10);
-            curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-            $curlResult = curl_exec($curl);
-            fclose(self::$curlFH);
-            $httpStatus = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+			curl_setopt ($curl, CURLOPT_TIMEOUT, CURL_TIMEOUT);
+			curl_setopt ($curl, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.122 Safari/534.30");
+			curl_setopt ($curl, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt ($curl, CURLOPT_HEADER, 0);
+			curl_setopt ($curl, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt ($curl, CURLOPT_WRITEFUNCTION, 'timthumb::curlWrite');
+			@curl_setopt ($curl, CURLOPT_FOLLOWLOCATION, true);
+			@curl_setopt ($curl, CURLOPT_MAXREDIRS, 10);
+			
+			$curlResult = curl_exec($curl);
+			fclose(self::$curlFH);
+			$httpStatus = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 			if($httpStatus == 404){
 				$this->set404();
 			}
