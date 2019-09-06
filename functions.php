@@ -425,11 +425,10 @@ function cartoon($url,$sum_c=1){
         }
         $arr_href_img =[];
         for($j=1 ; $j <= count($arr_href) ;$j++){
-//            if($j <= $sum_c){
+            if($j == $sum_c){
                 $arr_href_img[] = $arr_href[$j];
-//            }
+            }
         }
-
         //获取明细
         $arr_pic =[];
         foreach ($arr_href_img as $k_img => $v_imp){

@@ -2,7 +2,6 @@
 <?php
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 $this->need('header.php');
-include 'fun.php';
 $this->widget('Widget_Contents_Post_Recent','pageSize=7')->to($post);
 
 
@@ -64,9 +63,14 @@ $this->widget('Widget_Contents_Post_Recent','pageSize=7')->to($post);
 
                     <?php $this->content(); ?>
                     <div id="content_pic"></div>
-                    <input name="submit" type="submit" onclick="load_content(this)" class="submit" value="点击继续加载">
-                    <input name="sum" type=""  class="load_content_sum" value="2">
-                    <?php cartoon($this->fields->cartoon);?>
+                    <span style="float: right;">
+                        <p class="form-submit">
+                            <input style=" width: 88px;" name="submit"  type="button" id="submit" class="submit" value="上一章" onclick="load_content(1)">
+                            &nbsp;
+                            <input style=" width: 88px;" name="submit" type="button" id="submit" class="submit" value="下一章" onclick="load_content(2)">
+                        </p>
+                        <input name="sum" type="hidden"  class="load_content_sum" value="<?php echo !empty($_GET['p']) ?$_GET['p'] : 1;?>">
+                    </span>
 
                     <!--[if lt IE 9] -->
                     <script>document.createElement('audio');</script>
@@ -116,35 +120,37 @@ $this->widget('Widget_Contents_Post_Recent','pageSize=7')->to($post);
 </div>
 <?php $this->need('footer.php');?>
 <script type="text/javascript">
-//    function load_content() {
-//        var load_content_sum = $('.load_content_sum').val();
-//        var sum = parseInt(load_content_sum) + 2;
-//        $('.load_content_sum').val(sum);
-//        communal(sum);
-//        $.post('fun.php',{sum:sum},function () {
-//
-//        })
-//
-//    }
+    $(function () {
+        var sum_c= '<?php echo !empty($_GET['p']) ? $_GET['p'] : 1 ?>';
+        communal(sum_c);
+    })
 
-//    function communal(sum_c) {
-        var cartoon = '<?php echo cartoon($this->fields->cartoon) ?>';
+    function load_content(val) {
+        var load_content_sum = $('.load_content_sum').val();
+        if(val == 2){
+            var sum = parseInt(load_content_sum) + 1;
+        } else {
+            var sum = parseInt(load_content_sum) - 1;
+        }
+        $('.load_content_sum').val(sum);
+        var url = window.location.href;
+        var   newUrl=  changeURLArg(url, "p", sum);
+        window.location.href=newUrl;
+        communal(sum);
+    }
+
+
+    function communal() {
+
+        var cartoon = '<?php echo cartoon($this->fields->cartoon,!empty($_GET['p']) ? $_GET['p'] : 1 ) ?>';
         var object = JSON.parse(cartoon);//转化
         $.each(object,function(k,val){
             $.each(val,function(k_l,v_l){
                 $('#content_pic').append('<img src="'+v_l+'">') // 修改为你自己的头像标签
             });
         });
-
-//    }
+    }
     function changeURLArg(url, arg, arg_val) {
-        /// <summary>
-        /// url参数替换值
-        /// </summary>
-        /// <param name="url">目标url </param>
-        /// <param name="arg">需要替换的参数名称</param>
-        ///<param name="arg_val">替换后的参数的值</param>
-        /// <returns>参数替换后的url </returns>
         var pattern = arg + '=([^&]*)';
         var replaceText = arg + '=' + arg_val;
         if (url.match(pattern)) {
