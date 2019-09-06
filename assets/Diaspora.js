@@ -108,11 +108,11 @@ var Diaspora = {
 
                 case 'push':
                     history.pushState(state, title, url)
-                break;
+                    break;
 
                 case 'replace':
                     history.replaceState(state, title, url)
-                break;
+                    break;
 
             }
 
@@ -122,14 +122,14 @@ var Diaspora = {
 
             switch (flag) {
 
-                case 'push': 
+                case 'push':
                     Diaspora.preview()
-                break;
+                    break;
 
                 case 'replace':
                     window.scrollTo(0, 0)
                     Diaspora.loaded()
-                break;
+                    break;
             }
 
             setTimeout(function() {
@@ -193,17 +193,17 @@ var Diaspora = {
             },
             'playing': function() {
                 $('.icon-play').removeClass('icon-play').addClass('icon-pause')
-            } 
+            }
         })
     },
 
     loading: function() {
         var w = window.innerWidth;
         var css = '<style class="loaderstyle" id="loaderstyle'+ w +'">'+
-                  '@-moz-keyframes loader'+ w +'{100%{background-position:'+ w +'px 0}}'+
-                  '@-webkit-keyframes loader'+ w +'{100%{background-position:'+ w +'px 0}}'+
-                  '.loader'+ w +'{-webkit-animation:loader'+ w +' 3s linear infinite;-moz-animation:loader'+ w +' 3s linear infinite;}'+
-                  '</style>';
+            '@-moz-keyframes loader'+ w +'{100%{background-position:'+ w +'px 0}}'+
+            '@-webkit-keyframes loader'+ w +'{100%{background-position:'+ w +'px 0}}'+
+            '.loader'+ w +'{-webkit-animation:loader'+ w +' 3s linear infinite;-moz-animation:loader'+ w +' 3s linear infinite;}'+
+            '</style>';
         $('.loaderstyle').remove()
         $('head').append(css)
 
@@ -332,13 +332,13 @@ $(function() {
                     Diaspora.loading()
                 }
             }, 500)
-        })  
+        })
 
     } else {
 
         $('#single').css('min-height', window.innerHeight)
         $('html, body').removeClass('loading')
-        
+
         window.addEventListener('popstate', function(e) {
             if (e.state) location.href = e.state.u;
         })
@@ -384,7 +384,7 @@ $(function() {
         }
     })
 
-    $('body').on('click', function(e) {
+    $('body111').on('click', function(e) {
 
         var tag = $(e.target).attr('class') || '',
             rel = $(e.target).attr('rel') || '';
@@ -397,7 +397,7 @@ $(function() {
             case (tag.indexOf('switchmenu') != -1):
                 window.scrollTo(0, 0)
                 $('html, body').toggleClass('mu')
-            break;
+                break;
 
             // next page
             case (tag.indexOf('more') != -1):
@@ -428,7 +428,7 @@ $(function() {
                     } else {
                         $('#pager').remove()
                     }
-                    
+
                     var tempScrollTop = $(window).scrollTop();
                     $('#primary').append($(data).find('.post'))
                     $(window).scrollTop(tempScrollTop);
@@ -439,7 +439,7 @@ $(function() {
                 })
 
                 return false;
-            break;
+                break;
 
             // post images
             case (tag.indexOf('icon-images') != -1):
@@ -455,11 +455,14 @@ $(function() {
                     d.removeClass('active')
 
                     $('.article').css('height', 'auto')
+                    $('.article').css('right', '-50%')
                     $('.section').css('left', '-100%')
                     setTimeout(function() {
-                        $('.images').data('height', $('.images').height()).css('height', '0') 
+                        $('.images').data('height', $('.images').height()).css('height', '0')
                     }, 0)
                 } else {
+
+                    console.log(544);
                     d.addClass('active')
 
                     $('.images').css('height', $('.images').data('height'))
@@ -482,7 +485,7 @@ $(function() {
                             r = 80;
                         }
                         $('#jg').justifiedGallery({
-                            margins: m, 
+                            margins: m,
                             rowHeight : r,
                         }).on('jg.complete', function () {
                             $('.section').css('left', 0)
@@ -495,7 +498,7 @@ $(function() {
                     }
 
                 }
-            break;
+                break;
 
             // qrcode
             case (tag.indexOf('icon-wechat') != -1):
@@ -505,19 +508,19 @@ $(function() {
                     $('.icon-wechat').addClass('tg')
                     $('#qr').qrcode({ width: 128, height: 128, text: location.href}).toggle()
                 }
-            break;
+                break;
 
             // audio play
             case (tag.indexOf('icon-play') != -1):
                 $('#audio-'+ $('.icon-play').data('id') +'-1')[0].play()
                 $('.icon-play').removeClass('icon-play').addClass('icon-pause')
-            break;
+                break;
 
             // audio pause
             case (tag.indexOf('icon-pause') != -1):
                 $('#audio-'+ $('.icon-pause').data('id') +'-1')[0].pause()
                 $('.icon-pause').removeClass('icon-pause').addClass('icon-play')
-            break;
+                break;
 
             // post like
             case (tag.indexOf('icon-like') != -1):
@@ -546,31 +549,31 @@ $(function() {
                         $('#like-'+ id[1]).html('<span class="icon-like"></span><span class="count">' + num[0] + '</span>')
                     }
                 })
-            break;
+                break;
 
             // history state
             case (tag.indexOf('cover') != -1):
                 Diaspora.HS($(e.target).parent(), 'push')
                 return false;
-            break;
+                break;
 
             // history state
             case (tag.indexOf('posttitle') != -1):
                 Diaspora.HS($(e.target), 'push')
                 return false;
-            break;
+                break;
 
             // relate post
             case (tag.indexOf('relatea') != -1):
                 Diaspora.HS($(e.target), 'replace')
                 return false;
-            break;
+                break;
 
             // relate post
             case (tag.indexOf('relateimg') != -1):
                 Diaspora.HS($(e.target).parent(), 'replace')
                 return false;
-            break;
+                break;
 
             // prev, next post
             case (rel == 'prev' || rel == 'next'):
@@ -583,7 +586,7 @@ $(function() {
 
                 Diaspora.HS($(e.target), 'replace')
                 return false;
-            break;
+                break;
 
             // quick view
             case (tag.indexOf('pviewa') != -1):
@@ -594,11 +597,11 @@ $(function() {
                 }, 300)
 
                 return false;
-            break;
+                break;
 
             default:
                 return;
-            break;
+                break;
         }
 
     })

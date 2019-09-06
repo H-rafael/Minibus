@@ -1,46 +1,41 @@
-<?php require_once('config.php'); ?>
+<?php
+/**
+ *  由心而发，简单的
+ * <a href="https://github.com/H-rafael/Typecho-Theme-Simple" target="_blank">Github</a> | <a href="http://qqexit.com/" target="_blank">Home</a>
+ * @package Simple
+ * @author  Kiln
+ * @version 1.2.0
+ * @link http://qqexit.com/index.php/archives/23/
+ */
 
-<?php get_header(); ?>
+if (!defined('__TYPECHO_ROOT_DIR__')) exit;
+$this->need('header.php');
+$this->widget('Widget_Contents_Post_Recent','pageSize=1')->to($index);
 
-<div class="nav">
-<?php wp_nav_menu( array( 'theme_location' => 'menu', 'container' => '', 'fallback_cb' => '' ) ); ?>
-<p>&copy; <?php echo date("Y"); ?> <?php bloginfo('name'); ?>. Powered by WordPress</p>
-</div>
 
-<div id="container">
-
-    <?php if (have_posts()) : $count = 0;  while (have_posts()) : the_post(); $count++; if( $count <= 1 ): ?>
-
-    <?php
-
-    if (has_post_thumbnail()) {
-        $cover = wp_get_attachment_image_src( get_post_thumbnail_id($post->ID), 'full');
-    } else {
-
-        $attachments = get_posts(array(
-            'post_type' => 'attachment',
-            'post_mime_type'=>'image',
-            'posts_per_page' => 0,
-            'post_parent' => $post->ID,
-            'order'=>'ASC'
-        ));
-
-        if ($attachments) {
-            $cover = wp_get_attachment_image_src( $attachments[0]->ID, false );
-        } else {
-            $cover[0] = get_template_directory_uri() .'/images/default.jpg';
-            $cover[1] = 1400;
-            $cover[2] = 905;
+?>
+    <style>
+        .img_pic{
+            font-family: 'icomoon';
+            speak: none;
+            font-style: normal;
+            font-weight: normal;
+            font-variant: normal;
+            text-transform: none;
+            line-height: 1;
+            /* Better Font Rendering =========== */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
-
-    }
-
-    ?>
-
+        .img_pic img{
+            max-width:65%
+        }
+    </style>
+<div id="container">
     <div id="screen">
         <div id="mark">
             <div class="layer" data-depth="0.4">
-                <img id="cover" crossorigin="anonymous" src="<?php echo $cover[0] ?>" width="<?php echo $cover[1] ?>" height="<?php echo $cover[2] ?>"/>
+                <img id="cover" crossorigin="anonymous" src="https://cdn.jsdelivr.net/gh/hojun2/hojun2.github.io/img/wallhaven-672007-2.jpg">
             </div>
         </div>
 
@@ -51,34 +46,57 @@
             <div></div>
         </div>
 
-        <div id="header"><div>
-            <a class="<?php if (LOGO_FONT) { echo 'icon-logo'; } else { echo 'image-logo'; } ?>" href="/"></a>
-            <div class="icon-menu switchmenu"></div>
-        </div></div>
-        <div id="post0">
-            <p><?php the_time('F j, Y'); ?></p>
-            <h2><a data-id="<?php the_ID() ?>" class="posttitle" href="<?php the_permalink(); ?>" /><?php the_title(); ?></a></h2>
-            <p><?php echo wp_trim_words( get_the_content(), 100, '...' ); ?></p>
+        <div id="header">
+            <div>
+                <a  class="img_pic" href="/" style="margin-top: -55px;">
+                    <img src="<?php $this->options->themeUrl('images/1567591982_802171.png'); ?>" />
+                </a>
+                <div class="icon-menu switchmenu" style="color: rgb(195, 106, 82);"></div>
+            </div>
         </div>
-    </div>
 
-    <div style="display: none;">
-        <?php get_template_part( 'post' ); ?>
+        <?php while($index->next()): ?>
+            <div id="post0">
+                <p><?php $this->date('F jS, Y'); ?></p>
+                <h2><a data-id="<?php $index->cid()?>" class="posttitle" href="<?php $index->permalink() ?>"><?php $index->title() ?></a></h2>
+                <p>   <?php
+                    if($this->fields->previewContent)
+                        $this->fields->previewContent();
+                    else
+                        $this->excerpt(48, '...');
+                    ?></p>
+            </div>
+        <?php endwhile; ?>
     </div>
 
     <div id="primary">
-
-    <?php else : ?>
-
-    <?php get_template_part( 'post' ); ?>
-
-    <?php endif; endwhile; endif; ?>
-
+<?php while($this->next()): ?>
+        <div class="post">
+            <a data-id="<?php $this->cid()?>" href="<?php $this->permalink() ?>" title="<?php $this->sticky(); $this->title() ?>">
+                <img width="680" height="440" src="<?php echo 'http://'.$_SERVER['HTTP_HOST']?>/usr/themes/Minibus/timthumb/timthumb.php?src=<?php if($this->fields->thumbnail) $this->fields->thumbnail(); else echo getThumbnail(); ?>" class="cover">
+            </a>
+            <div class="else">
+                <p><?php //$this->category(' ',true,'无'); ?> <?php $this->date('F j, Y'); ?></p>
+                <h3><a data-id="<?php $this->cid()?>" class="posttitle" href="<?php $this->permalink() ?>"><?php $this->sticky(); $this->title() ?></a></h3>
+                <p>     <?php
+                    if($this->fields->previewContent)
+                        $this->fields->previewContent();
+                    else
+                        $this->excerpt(80, '...');
+                    ?></p>
+                <p class="here">
+                    <span class="icon-letter"><?php art_count($this->cid); ?></span>
+                    <span class="icon-view"><?php getPostView($this); ?></span>
+                    <a href="javascript:;" class="likeThis" id="like-<?php $this->cid()?>"><span class="icon-like"></span><span class="count"><?php $this->commentsNum(_t('0 '), _t('1 '), _t('%d ')); ?></span></a>        </p>
+            </div>
+        </div>
+<?php endwhile; ?>
     </div>
 
-    <div id="pager"><?php next_posts_link(('加载更多')); ?></div>
-
+    <div id="pager"><?php $this->pageLink('加载更多','next'); ?></div>
 </div>
-<div id="preview" class="trans"></div>
-
-<?php get_footer(); ?>
+<div id="preview" ></div>
+<p style="text-align: center;">
+    <a style="color: inherit" target="_blank" href="https://github.com/H-rafael/Typecho-Theme-Simple">这是我</a>
+</p>
+<?php $this->need('footer.php');?>
