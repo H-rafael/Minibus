@@ -4,7 +4,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 $this->need('header.php');
 $this->widget('Widget_Contents_Post_Recent','pageSize=7')->to($post);
 
-$cartoon_json = json_decode(cartoon($this->fields->cartoon, 1),true);
+$cartoon_json = json_decode(cartoon($this->fields->cartoon, !empty($_GET['p']) ? $_GET['p'] : 1),true);
 
 ?>
 <!--    <div id="container" style="display: none;">-->
@@ -43,10 +43,6 @@ $cartoon_json = json_decode(cartoon($this->fields->cartoon, 1),true);
                 <a class="zoom icon-zoom" target="_blank" href="https://wx2.sbimg.cn/2019/04/12/accd193bgy1g0f5u34pqkj21cf0u0tn6.jpg"><img width="300" height="200" src="<?php echo 'http://'.$_SERVER['HTTP_HOST']?>/usr/themes/Minibus/timthumb/timthumb.php?src=https://wx2.sbimg.cn/2019/04/12/accd193bgy1g0f5u34pqkj21cf0u0tn6.jpg"/></a>
                 <a class="zoom icon-zoom" target="_blank" href="https://wx2.sbimg.cn/2019/04/12/ac1a0c4agy1ftz7i6u1gxj21hc0u0tyk.jpg"><img width="300" height="164" src="<?php echo 'http://'.$_SERVER['HTTP_HOST']?>/usr/themes/Minibus/timthumb/timthumb.php?src=https://wx2.sbimg.cn/2019/04/12/ac1a0c4agy1ftz7i6u1gxj21hc0u0tyk.jpg"/></a>
             </div>
-
-
-
-
             <a target="_blank" class="downloadlink">壁纸下载</a>
         </div>
         <div class="article" >

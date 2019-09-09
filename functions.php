@@ -399,66 +399,114 @@ function getPostView($archive)
 }
 
 function cartoon($url,$sum_c=1){
-    $url = !empty($_GET['cartoon']) ? $_GET['cartoon'] : $url;
-//    if(isset($_GET['action']) && $_GET['action'] == 'ajax_avatar_get'){
-    if(!empty($url)){
-        set_time_limit(0);
-        $html=file_get_contents($url);
-        preg_match_all("/<ul class=\"chapterlist\".*?>.*?<\/ul>/ism",$html,$out);
-        preg_match_all("/<a(s*[^>]+s*)href=([\"|']?)([^\"'>\s]+)([\"|']?)/ies",$out[0][0],$out_href);
-        preg_match_all("/<a(s*[^>]+s*)title=([\"|']?)([^\"'>\s]+)([\"|']?)/ies",$out[0][0],$out_title);
-        //地址
-        $adder_url = $out_href['3'];
-        //名称
-        $arr_name = $out_title['3'];
-        //获取列表
-        $arr_href_sort =[];
-        $i =1;
-        foreach ($adder_url as $k => $v){
-            $arr_href_sort[$i++] =['name'=>$arr_name[$k],'url'=> $url.$v];
-        }
-        krsort($arr_href_sort);
-        $arr_href = [];
-        $o = 1;
-        foreach ($arr_href_sort as $k_sort => $v_sort){
-            $arr_href[$o++] = $v_sort;
-        }
-        $arr_href_img =[];
-        for($j=1 ; $j <= count($arr_href) ;$j++){
-            if($j == $sum_c){
-                $arr_href_img[] = $arr_href[$j];
+//    print_r($url);die;
+    $str_str = strstr($url, 'www.manhuaniu.com');
+    if($str_str == true){
+        return man_hua_niu($url, $sum_c);
+    } else {
+        if(!empty($url)){
+            set_time_limit(0);
+            $html = curl($url);
+            preg_match_all("/<ul class=\"chapterlist\".*?>.*?<\/ul>/ism",$html,$out);
+            preg_match_all("/<a(s*[^>]+s*)href=([\"|']?)([^\"'>\s]+)([\"|']?)/ies",$out[0][0],$out_href);
+            preg_match_all("/<a(s*[^>]+s*)title=([\"|']?)([^\"'>\s]+)([\"|']?)/ies",$out[0][0],$out_title);
+            //地址
+            $adder_url = $out_href['3'];
+            //名称
+            $arr_name = $out_title['3'];
+            //获取列表
+            $arr_href_sort =[];
+            $i =1;
+            foreach ($adder_url as $k => $v){
+                $arr_href_sort[$i++] =['name'=>$arr_name[$k],'url'=> $url.$v];
             }
-        }
-        //获取明细
-        $arr_pic =[];
-        foreach ($arr_href_img as $k_img => $v_imp){
-            $html_imp =file_get_contents($v_imp['url']);
-            preg_match_all("/<span class=\"total-page\">([\"|']?)([^\"'>\s]+)([\"|']?)<\/span>/ies",$html_imp,$page_num,PREG_PATTERN_ORDER);
-            //获取分页数量
-            $res_page_num = $page_num[2][0];
-            preg_match_all("/<script.*?>([\s\S]+?)<\/script>/ism",$html_imp,$script,PREG_PATTERN_ORDER);
-
-            $middle = explode("middle:",$script[0][2]);
-            $middle_url =  explode(",",$middle[1]);
-            $chapter_addr_original = str_replace(['"','chapter_addr_original:'],'',$middle_url[3]);
-            $comic_size = str_replace(['"','comic_size:'],'',$middle_url[9]);
-            $res_list =[];
-            for($i=1;$i<=$res_page_num;$i++){
-                $img_url = 'http://mhpic.zymkcdn.com/comic/'.$chapter_addr_original.$i.'.jpg'.$comic_size;
-                if(!empty($img_url)){
-//                    echo '<img src="'.$img_url.'">';
+            krsort($arr_href_sort);
+            $arr_href = [];
+            $o = 1;
+            foreach ($arr_href_sort as $k_sort => $v_sort){
+                $arr_href[$o++] = $v_sort;
+            }
+            $arr_href_img =[];
+            for($j=1 ; $j <= count($arr_href) ;$j++){
+                if($j == $sum_c){
+                    $arr_href_img[] = $arr_href[$j];
                 }
-                $res_list[$i]= $img_url;
             }
-            $arr_pic[] = $res_list;
+            //获取明细
+            $arr_pic =[];
+            foreach ($arr_href_img as $k_img => $v_imp){
+                $html_imp = curl($v_imp['url']);
+                preg_match_all("/<span class=\"total-page\">([\"|']?)([^\"'>\s]+)([\"|']?)<\/span>/ies",$html_imp,$page_num,PREG_PATTERN_ORDER);
+                //获取分页数量
+                $res_page_num = $page_num[2][0];
+                preg_match_all("/<script.*?>([\s\S]+?)<\/script>/ism",$html_imp,$script,PREG_PATTERN_ORDER);
+
+                $middle = explode("middle:",$script[0][2]);
+                $middle_url =  explode(",",$middle[1]);
+                $chapter_addr_original = str_replace(['"','chapter_addr_original:'],'',$middle_url[3]);
+                $comic_size = str_replace(['"','comic_size:'],'',$middle_url[9]);
+                $res_list =[];
+                for($i=1;$i<=$res_page_num;$i++){
+                    $img_url = 'http://mhpic.zymkcdn.com/comic/'.$chapter_addr_original.$i.'.jpg'.$comic_size;
+                    if(!empty($img_url)){
+                        $res_list[$i]= $img_url;
+                    }
+                }
+                $arr_pic[] = $res_list;
+            }
+            return json_encode($arr_pic,JSON_UNESCAPED_UNICODE);
         }
-//        print_r(json_encode($arr_pic,JSON_UNESCAPED_UNICODE));
-        return json_encode($arr_pic,JSON_UNESCAPED_UNICODE);
-//    }
     }
 
 }
 
+
+function man_hua_niu($url, $sum_c){
+//    print_r($sum_c);die;
+    set_time_limit(0);
+    $html = curl($url);
+    preg_match_all("/<ul id=\"chapter-list-1\" data-sort=\"asc\".*?>.*?<\/ul>/ism",$html,$out);
+    preg_match_all("/<a(s*[^>]+s*)href=([\"|']?)([^\"'>\s]+)([\"|']?)/ies",$out[0][0],$out_href);
+    $arr_link = $out_href[3];
+    //名称
+    $arr_href_img =[];
+    foreach ($arr_link as $k => $v){
+        $k_n = $k+1;
+        if($k_n == $sum_c){
+            $arr_href_img[] = 'https://www.manhuaniu.com'.$v;
+        }
+    }
+    //获取明细
+    $arr_man =[];
+    foreach ($arr_href_img as $k_img => $v_imp){
+        $file_contents = curl($v_imp);
+        preg_match_all("/<script.*?>([\s\S]+?)<\/script>/ism",$file_contents,$script_json);
+        $res_list =[];
+        $chapter_images = explode("chapterImages = ",$script_json[0][1]);
+        $chapter_images_json = explode("var chapterPath ",$chapter_images[1]);
+        $json_decode = str_replace(array(';'),'',$chapter_images_json[0]);
+        $json_decode_url = json_decode($json_decode,true);
+        foreach ($json_decode_url as $v_m){
+            if(!empty($v_m)){
+                $res_list[] = 'https://res.nbhbzl.com/'.$v_m;
+            }
+        }
+        $arr_man[] = $res_list;
+    }
+    return json_encode($arr_man,JSON_UNESCAPED_UNICODE);
+
+}
+
+function curl($url){
+    $ch = curl_init();
+    $timeout = 20;
+    curl_setopt ($ch, CURLOPT_URL, $url);
+    curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+    $file_contents = curl_exec($ch);
+    curl_close($ch);
+    return $file_contents;
+}
 
 //function themeInit($archive)
 //{
