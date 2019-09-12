@@ -80,7 +80,7 @@ $cartoon_json = json_decode(cartoon($this->fields->cartoon, !empty($_GET['p']) ?
                     <script>document.createElement('audio');</script>
                     <!-- [endif]-->
                     <audio class="wp-audio-shortcode" id="audio-<?php $this->cid(); ?>-1" loop="1" preload="auto" style="width: 100%;" controls="controls">
-                        <source type="audio/mpeg" src="http://music.163.com/song/media/outer/url?id=<?php if(!empty($this->fields->music)) $this->fields->music(); else echo '29045492'; ?>.mp3" />
+                        <source type="audio/mpeg" src="http://music.163.com/song/media/outer/url?id=<?php if(!empty($this->fields->music)) $this->fields->music(); else echo ''; ?>.mp3" />
                     </audio>
 
                 </div>

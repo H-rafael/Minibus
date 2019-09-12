@@ -1,4 +1,4 @@
-
+<?php if($this->options->statistics) $this->options->statistics(); ?>
 <script src="<?php $this->options->themeUrl('static/jquery.min.js'); ?>"></script>
 <script src="<?php $this->options->themeUrl('static/plugin.js'); ?>"></script>
 <!--<script src="--><?php //$this->options->themeUrl('assets/Diaspora.js'); ?><!--"></script>-->

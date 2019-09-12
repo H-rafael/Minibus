@@ -12,12 +12,14 @@
     <meta name="keywords" content="熊之大, rainmeter, design, web, 壁纸, 设计, 收集, wallpaper, collection, jaku, icon">
     <meta name="description" content="世界上每个角落都有人过着相似的人生">
     <meta name="author" content="LoeiFy">
+
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="<?php $this->options->themeUrl('images/favicon.ico'); ?>">
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="<?php $this->options->themeUrl('images/favicon.ico'); ?>">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="<?php $this->options->themeUrl('images/favicon.ico'); ?>">
     <link rel="apple-touch-icon-precomposed" href="<?php $this->options->themeUrl('images/favicon.ico'); ?>">
     <link rel="icon" type="image/png" href="<?php $this->options->themeUrl('images/favicon.ico'); ?>">
     <link rel="stylesheet" href="<?php $this->options->themeUrl('assets/Diaspora.css'); ?>">
+    <?php if($this->options->userHeader) $this->options->userHeader(); ?>
 </head>
 <body class="loading">
 <div id="loader"></div>
