@@ -149,6 +149,11 @@ if(! isset($ALLOWED_SITES)){
 		'wx1.sbimg.cn',
 		'qqexit.com',
 		'isujin.com',
+		'wx1.sinaimg.cn',
+		'wx2.sinaimg.cn',
+		'wx3.sinaimg.cn',
+		'wx4.sinaimg.cn',
+		'hbimg.huabanimg.com',
 	);
 }
 
@@ -230,6 +235,7 @@ class timthumb {
 			}
 
 			$this->cacheDirectory = FILE_CACHE_DIRECTORY;
+//			print_r($this->cacheDirectory . '/index.html');die;
 			if (!touch($this->cacheDirectory . '/index.html')) {
 				$this->error("Could not create the index.html file - to fix this create an empty file named index.html file in the cache directory.");
 			}
@@ -499,7 +505,7 @@ class timthumb {
 		}
 		$this->debug(3, "cleanCache() called");
 		$lastCleanFile = $this->cacheDirectory . '/timthumb_cacheLastCleanTime.touch';
-		
+//        print_r($lastCleanFile);die;
 		//If this is a new timthumb installation we need to create the file
 		if(! is_file($lastCleanFile)){
 			$this->debug(1, "File tracking last clean doesn't exist. Creating $lastCleanFile");
