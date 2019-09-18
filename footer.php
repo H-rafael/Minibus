@@ -43,7 +43,9 @@
     $(function () {
         $('#content_pic').empty();
         var sum_c= '<?php echo !empty($_GET['p']) ? $_GET['p'] : 1 ?>';
-        communal(sum_c);
+        if(sum_c !=''){
+            communal(sum_c);
+        }
     })
     function load_content(val) {
         $('#content_pic').empty();

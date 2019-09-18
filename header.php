@@ -29,7 +29,7 @@
     <link rel="stylesheet" href="<?php $this->options->themeUrl('assets/Diaspora.css'); ?>">
     <?php if($this->options->userHeader) $this->options->userHeader(); ?>
     <style>
-        .top_b{margin-top: 50px;margin-left: 26px;}
+        .top_b{margin-top: 50px;margin-left: 5px;}
         .chapterlist {
             display: -webkit-box;
             display: -ms-flexbox;

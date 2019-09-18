@@ -8,6 +8,7 @@ $arr_cartoon_json = json_decode(cartoon($this->fields->cartoon, !empty($_GET['p'
 $cartoon_json = $arr_cartoon_json['res_list'];
 $arr_name = $arr_cartoon_json['arr_name'];
 
+$res_mobile = isMobile();
 ?>
 <style>
     .icon-cartoon{
@@ -65,8 +66,15 @@ $arr_name = $arr_cartoon_json['arr_name'];
                 <?php
                 if(!empty($arr_name)){
                 krsort($arr_name);
-                foreach ($arr_name as $k_n => $v_n){ ?>
-                    <li class="item">  <a class="chapterBtn" href="<?php echo '?p='.$k_n?>" title="<?php echo $v_n?>"><span class="ellipsis"><?php echo $v_n?></span></a></li>
+                foreach ($arr_name as $k_n => $v_n){
+                        $sign = $res_mobile == true ? '' : '..' ;
+                        if(mb_strlen($v_n,'utf-8') >= 7) {
+                            $rs_key = mb_substr($v_n,0,5,'utf-8'). $sign;
+                        } else {
+                            $rs_key = $v_n;
+                        }
+                    ?>
+                    <li class="item" style="width:<?php echo $res_mobile == true ? 22 : 15 ;?>%;">  <a class="chapterBtn" href="<?php echo '?p='.$k_n?>" title="<?php echo $v_n?>"><span class="ellipsis"><?php echo $rs_key?></span></a></li>
                 <?php } } ?>
             </ul>
         </div>
