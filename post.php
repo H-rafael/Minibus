@@ -61,7 +61,7 @@ $res_mobile = isMobile();
             <a target="_blank" class="downloadlink">壁纸下载</a>
         </div>
 
-        <div class="top_b" style="display: none">
+        <div class="top_b" style="display: none;margin-left: <?php echo $res_mobile == true ? 5 : 40 ?>px;">
             <ul class="chapterlist">
                 <?php
                 if(!empty($arr_name)){
@@ -88,7 +88,7 @@ $res_mobile = isMobile();
                     <span>评论 <?php $this->commentsNum(_t('0 '), _t('1 '), _t('%d ')); ?></span>
                     <span>
                         <?php if(!empty($arr_name)){ ?>
-                            更新至 <span style="color: red"><?php echo reset($arr_name)?></span>
+                            更新至 <strong style="color: red"><?php echo reset($arr_name)?></strong> 章
                         <?php } else { ?>
                             喜欢 <a href="javascript:;" class="likeThis" id="like-<?php $this->cid(); ?>"><span class="icon-like"></span><span class="count">627</span></a>
                         <?php }?>
