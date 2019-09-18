@@ -4,8 +4,6 @@
 <!--<script src="--><?php //$this->options->themeUrl('assets/Diaspora.js'); ?><!--"></script>-->
 
 <script src="https://isujin.com/wp-content/themes/Diaspora/assets/Diaspora.js"></script>
-
-
 <script type="text/javascript">
     //点击加载更多
     jQuery(document).ready(function($) {
@@ -63,11 +61,14 @@
     }
     function communal() {
         var cartoon = '<?php echo cartoon($this->fields->cartoon,!empty($_GET['p']) ? $_GET['p'] : 1 ) ?>';
+
         var object = JSON.parse(cartoon);//转化
-        $.each(object,function(k,val){
-            $.each(val,function(k_l,v_l){
-                $('#content_pic').append('<img src="'+v_l+'">') // 修改为你自己的头像标签
-            });
+
+        $.each(object['res_list'],function(k,val){
+            $('#content_pic').append('<img src="'+val+'">') // 修改为你自己的头像标签
+
+//            $.each(val,function(k_l,v_l){
+//            });
         });
     }
     function changeURLArg(url, arg, arg_val) {
@@ -92,9 +93,12 @@
         var r = window.location.search.substr(1).match(reg); //匹配目标参数
         if (r != null) return unescape(r[2]); return null; //返回参数值
     }
+//    $('.icon-images').click(function(){//点击a标签
+//        console.log($('#jg').is(':hidden'));
+//        article_images()
+//    })
 
-
-    $('.icon-images').click(function(){//点击a标签
+    function icon_images() {
         console.log($('#jg').is(':hidden'));
         if($('.images').is(':hidden')){//如果当前隐藏
             $('#timo').show();//那么就显示div
@@ -102,7 +106,18 @@
             $('.article').css('right','-50%');
             $('.images').css('margin-top','50px');
         }
-    })
+    }
+    function cartoon_info() {
+        console.log($('.top_b').is(':hidden'));
+        if($('.top_b').is(':hidden')){//如果当前隐藏
+            console.log(333);
+            $('.top_b').show();//那么就显示div
+            $('.article').hide();
+        }else{//否则
+            $('.article').show();
+            $('.top_b').hide();
+        }
+    }
 </script>
 </body>
 </html>

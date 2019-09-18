@@ -1514,6 +1514,10 @@ ol.children li {
     content: "\e60b";
 }
 
+.icon-cartoon:before {
+    content: "\e60b";
+}
+
 .icon-logo:before {
     content: "\e60d";
 }

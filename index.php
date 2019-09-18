@@ -11,7 +11,7 @@
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 $this->need('header.php');
 $this->widget('Widget_Contents_Post_Recent','pageSize=1')->to($index);
-//https://cdn.jsdelivr.net/gh/H-rafael/Minibus@v1.0/footer.php
+
 ?>
 <!-- 现代写法，推荐 -->
 <!-- 兼容低版本浏览器 (包括 IE)，可移除 -->
@@ -40,7 +40,7 @@ $this->widget('Widget_Contents_Post_Recent','pageSize=1')->to($index);
         <div id="mark">
             <div class="layer" data-depth="0.4">
 <!--                https://cdn.jsdelivr.net/gh/hojun2/hojun2.github.io/img/wallhaven-672007-2.jpg-->
-                <img id="cover" crossorigin="anonymous" src="https://wx2.sbimg.cn/2019/04/11/--4k_2a610672a2ea5e49.jpg">
+                <img id="cover" crossorigin="anonymous" src="https://cdn.jsdelivr.net/gh/H-rafael/Minibus@2.0/img/220144-1539784904d93c.jpg">
             </div>
         </div>
 

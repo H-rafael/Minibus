@@ -8,7 +8,15 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate">
-    <title>我的熊之大博客</title>
+    <title>熊之大</title>
+    <!-- 通过自有函数输出HTML头部信息 -->
+    <?php $this->header("generator=&commentReply="); ?>
+    <title><?php $this->archiveTitle(array(
+            'category'  =>  _t('分类 %s 下的文章'),
+            'search'    =>  _t('包含关键字 %s 的文章'),
+            'tag'       =>  _t('标签 %s 下的文章'),
+            'author'    =>  _t('%s 发布的文章')
+        ), '', ' - '); ?><?php $this->options->title(); ?> - <?php $this->options->description(); ?></title>
     <meta name="keywords" content="熊之大, rainmeter, design, web, 壁纸, 设计, 收集, wallpaper, collection, jaku, icon">
     <meta name="description" content="世界上每个角落都有人过着相似的人生">
     <meta name="author" content="LoeiFy">
@@ -20,7 +28,53 @@
     <link rel="icon" type="image/png" href="<?php $this->options->themeUrl('images/favicon.ico'); ?>">
     <link rel="stylesheet" href="<?php $this->options->themeUrl('assets/Diaspora.css'); ?>">
     <?php if($this->options->userHeader) $this->options->userHeader(); ?>
+    <style>
+        .top_b{margin-top: 50px;margin-left: 26px;}
+        .chapterlist {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-pack: start;
+            -ms-flex-pack: start;
+            justify-content: flex-start;
+            -webkit-box-align: start;
+            -ms-flex-align: start;
+            align-items: flex-start;
+            -ms-flex-line-pack: start;
+            align-content: flex-start;
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+            height: 3.20003rem;
+            padding: 0 .32rem;
+            width: 50%;
+            height: 100%;
+        }
+        .chapterlist>.item {
+            position: relative;
+            width: 15%;
+            height: 1.85334rem;
+            margin-top: .28334rem;
+            margin-right: 9px;
+            background: #f5f5f5;
+            border-radius: .05333rem;
+        }
+        .chapterlist>.item .chapterBtn {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            color: #555;
+        }
+    </style>
 </head>
+
 <body class="loading">
 <div id="loader"></div>
 <div class="nav">

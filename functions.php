@@ -422,9 +422,12 @@ function cartoon($url,$sum_c=1){
             }
             krsort($arr_href_sort);
             $arr_href = [];
+            $arr_name = [];
             $o = 1;
             foreach ($arr_href_sort as $k_sort => $v_sort){
-                $arr_href[$o++] = $v_sort;
+                $arr_href[$o] = $v_sort;
+                $arr_name[$o] = $v_sort['name'];
+                $o++;
             }
             $arr_href_img =[];
             for($j=1 ; $j <= count($arr_href) ;$j++){
@@ -452,7 +455,8 @@ function cartoon($url,$sum_c=1){
                         $res_list[$i]= $img_url;
                     }
                 }
-                $arr_pic[] = $res_list;
+                $arr_pic['arr_name'] = $arr_name;
+                $arr_pic['res_list'] = $res_list;
             }
             return json_encode($arr_pic,JSON_UNESCAPED_UNICODE);
         }
@@ -462,16 +466,19 @@ function cartoon($url,$sum_c=1){
 
 
 function man_hua_niu($url, $sum_c){
-//    print_r($sum_c);die;
     set_time_limit(0);
     $html = curl($url);
     preg_match_all("/<ul id=\"chapter-list-1\" data-sort=\"asc\".*?>.*?<\/ul>/ism",$html,$out);
     preg_match_all("/<a(s*[^>]+s*)href=([\"|']?)([^\"'>\s]+)([\"|']?)/ies",$out[0][0],$out_href);
     $arr_link = $out_href[3];
     //名称
+    preg_match_all("/<span>(.*?)<\/span>/ies",$out[0][0],$out_name);
+    $title_name = $out_name[1];
     $arr_href_img =[];
+    $arr_name =[];
     foreach ($arr_link as $k => $v){
         $k_n = $k+1;
+        $arr_name[$k_n] = $title_name[$k];
         if($k_n == $sum_c){
             $arr_href_img[] = 'https://www.manhuaniu.com'.$v;
         }
@@ -491,11 +498,13 @@ function man_hua_niu($url, $sum_c){
                 $res_list[] = 'https://res.nbhbzl.com/'.$v_m;
             }
         }
-        $arr_man[] = $res_list;
+        $arr_man['arr_name'] = $arr_name;
+        $arr_man['res_list'] = $res_list;
     }
     return json_encode($arr_man,JSON_UNESCAPED_UNICODE);
 
 }
+
 
 function curl($url){
     $ch = curl_init();

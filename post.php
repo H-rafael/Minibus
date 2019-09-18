@@ -4,12 +4,21 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 $this->need('header.php');
 $this->widget('Widget_Contents_Post_Recent','pageSize=7')->to($post);
 
-$cartoon_json = json_decode(cartoon($this->fields->cartoon, !empty($_GET['p']) ? $_GET['p'] : 1),true);
+$arr_cartoon_json = json_decode(cartoon($this->fields->cartoon, !empty($_GET['p']) ? $_GET['p'] : 1),true);
+$cartoon_json = $arr_cartoon_json['res_list'];
+$arr_name = $arr_cartoon_json['arr_name'];
 
 ?>
-<!--    <div id="container" style="display: none;">-->
-<!--    </div>-->
-
+<style>
+    .icon-cartoon{
+        color: #EF6D57;
+        left: 90px;
+        position: absolute;
+        top: 17px;
+        font-size: 18px;
+        cursor: pointer;
+    }
+</style>
 <div id="single">
     <div id="top">
         <div class="bar"></div>
@@ -18,7 +27,12 @@ $cartoon_json = json_decode(cartoon($this->fields->cartoon, !empty($_GET['p']) ?
         </a>
         <!--        icon-play 关  icon-pause 开-->
         <div title="播放/暂停" data-id="<?php $this->cid(); ?>" class="icon-play"></div>
-        <div title="查看壁纸" class="icon-images"></div>
+        <?php if(!empty($arr_name)){ ?>
+            <div title="查看漫画章节" class="icon-cartoon" onclick="cartoon_info(this)" style="font-size: 16px;color: #EF6D57;left: 90px;position: absolute;top: 17px;cursor: pointer;">查看章节</div>
+        <?php } else{ ?>
+            <div title="查看壁纸" class="icon-images" onclick="icon_images(this)" style="font-size: 16px;"></div>
+        <?php }?>
+
         <h3 class="subtitle"><?php $this->title() ?></h3>
         <div class="social">
             <div class="like-icon">
@@ -45,7 +59,18 @@ $cartoon_json = json_decode(cartoon($this->fields->cartoon, !empty($_GET['p']) ?
             </div>
             <a target="_blank" class="downloadlink">壁纸下载</a>
         </div>
-        <div class="article" >
+
+        <div class="top_b" style="display: none">
+            <ul class="chapterlist">
+                <?php
+                if(!empty($arr_name)){
+                krsort($arr_name);
+                foreach ($arr_name as $k_n => $v_n){ ?>
+                    <li class="item">  <a class="chapterBtn" href="<?php echo '?p='.$k_n?>" title="<?php echo $v_n?>"><span class="ellipsis"><?php echo $v_n?></span></a></li>
+                <?php } } ?>
+            </ul>
+        </div>
+        <div class="article">
             <div>
                 <h1 class="title"><?php $this->title() ?></h1>
                 <div class="stuff">
@@ -53,7 +78,13 @@ $cartoon_json = json_decode(cartoon($this->fields->cartoon, !empty($_GET['p']) ?
                     <span>阅读 <?php getPostView($this); ?></span>
                     <span>字数 <?php art_count($this->cid); ?></span>
                     <span>评论 <?php $this->commentsNum(_t('0 '), _t('1 '), _t('%d ')); ?></span>
-                    <span>喜欢 <a href="javascript:;" class="likeThis" id="like-<?php $this->cid(); ?>"><span class="icon-like"></span><span class="count">627</span></a></span>
+                    <span>
+                        <?php if(!empty($arr_name)){ ?>
+                            更新至 <span style="color: red"><?php echo reset($arr_name)?></span>
+                        <?php } else { ?>
+                            喜欢 <a href="javascript:;" class="likeThis" id="like-<?php $this->cid(); ?>"><span class="icon-like"></span><span class="count">627</span></a>
+                        <?php }?>
+                    </span>
                 </div>
 
                 <div class="content">
@@ -61,7 +92,7 @@ $cartoon_json = json_decode(cartoon($this->fields->cartoon, !empty($_GET['p']) ?
                     <?php $this->content(); ?>
                     <div id="content_pic">
                         <?php if(!empty($cartoon_json)){
-                            foreach ($cartoon_json[0] as $v_j){
+                            foreach ($cartoon_json as $v_j){
                                 if(!empty($v_j)){?>
                                 <img src="<?php echo $v_j ?>">
                        <?php } } } ?>
