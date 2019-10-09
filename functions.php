@@ -399,10 +399,11 @@ function getPostView($archive)
 }
 
 function cartoon($url,$sum_c=1){
-//    print_r($url);die;
     $str_str = strstr($url, 'www.manhuaniu.com');
     if($str_str == true){
         return man_hua_niu($url, $sum_c);
+    }else if(strstr($url, 'www.mh1234.com')){
+        return mh1234_mh8($url, $sum_c);
     } else {
         if(!empty($url)){
             set_time_limit(0);
@@ -503,6 +504,46 @@ function man_hua_niu($url, $sum_c){
     }
     return json_encode($arr_man,JSON_UNESCAPED_UNICODE);
 
+}
+
+function mh1234_mh8($url, $sum_c){
+    //漫画列表
+    $url_list = 'https://www.mh1234.com/comic/16289.html';
+    $mip_7edm_url = curl($url_list);
+    preg_match_all("/<ul id=\"chapter-list-1\" data-sort=\"asc\">.*?>.*?<\/ul>/ism",$mip_7edm_url,$mip_7edm_list);
+    //目录跳转地址
+    preg_match_all("/<a(s*[^>]+s*)href=([\"|']?)([^\"'>\s]+)([\"|']?)/ies",$mip_7edm_list[0][0],$mip_7edm_a);
+    $mip_7edm_a = $mip_7edm_a[3];
+    //名称
+    preg_match_all("/>(.*)<\/a>/",$mip_7edm_list[0][0],$out_name);
+    $out_name =$out_name[1];
+    $arr_name = [];
+    $arr_href_img =[];
+    foreach ($mip_7edm_a as $k => $v){
+        $k_n = $k+1;
+        $arr_name[$k_n] = $out_name[$k];
+        if($k_n == $sum_c){
+            $arr_href_img[] = 'https://www.mh1234.com'.$v;
+        }
+    }
+    $arr_man =[];
+    foreach ($arr_href_img as $v_url){
+        $output = curl($v_url);
+        preg_match_all("/<script>([\s\S]+?)<\/script>/ism",$output,$script,PREG_PATTERN_ORDER);
+        $script_val = explode('var',$script[1][1]);
+        $chapterPath = explode('=',$script_val[4]);
+        $chapterPath =  str_replace(array('"',";"," "),array(''),$chapterPath[1]);
+        $chapter_images = explode('=',$script_val[3]);
+        $chapter_images = str_replace(array(';'),array(''),$chapter_images[1]);
+        $chapter_images = json_decode($chapter_images);
+        $res_href =[];
+        foreach ($chapter_images as $v_h){
+            $res_href[] = 'https://mhpic.dongzaojiage.com/'.$chapterPath.$v_h;
+        }
+        $arr_man['arr_name'] = $arr_name;
+        $arr_man['res_list'] = $res_href;
+    }
+    return json_encode($arr_man,JSON_UNESCAPED_UNICODE);
 }
 
 

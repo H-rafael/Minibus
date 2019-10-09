@@ -154,6 +154,7 @@ if(! isset($ALLOWED_SITES)){
 		'wx3.sinaimg.cn',
 		'wx4.sinaimg.cn',
 		'hbimg.huabanimg.com',
+        'ww1.sinaimg.cn',
 	);
 }
 

@@ -7,7 +7,6 @@ $this->widget('Widget_Contents_Post_Recent','pageSize=7')->to($post);
 $arr_cartoon_json = json_decode(cartoon($this->fields->cartoon, !empty($_GET['p']) ? $_GET['p'] : 1),true);
 $cartoon_json = $arr_cartoon_json['res_list'];
 $arr_name = $arr_cartoon_json['arr_name'];
-
 $res_mobile = isMobile();
 ?>
 <style>
