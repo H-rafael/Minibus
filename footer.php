@@ -43,7 +43,8 @@
     $(function () {
         $('#content_pic').empty();
         var sum_c= '<?php echo !empty($_GET['p']) ? $_GET['p'] : 1 ?>';
-        if(sum_c !=''){
+
+        if(sum_c != ''){
             communal(sum_c);
         }
     })
@@ -63,7 +64,9 @@
     }
     function communal() {
         var cartoon = '<?php echo cartoon($this->fields->cartoon,!empty($_GET['p']) ? $_GET['p'] : 1 ) ?>';
-
+        if(cartoon ==''){
+            return false;
+        }
         var object = JSON.parse(cartoon);//转化
 
         $.each(object['res_list'],function(k,val){

@@ -10,7 +10,7 @@
 
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 $this->need('header.php');
-$this->widget('Widget_Contents_Post_Recent','pageSize=1')->to($index);
+$this->widget('Widget_Contents_Post_Recent','pageSize=10')->to($index);
 
 ?>
 <!-- 现代写法，推荐 -->

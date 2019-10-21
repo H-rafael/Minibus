@@ -370,7 +370,7 @@ function postOther($archive)
 /**
  * 文章浏览次数
  */
-function getPostView($archive)
+function getPostView($archive,$sign ='')
 {
     $cid = $archive->cid;
     $db = Typecho_Db::get();
@@ -395,7 +395,11 @@ function getPostView($archive)
             Typecho_Cookie::set('extend_contents_views', $views); //记录查看cookie
         }
     }
-    echo $row['views'];
+    if(!empty($sign)){
+        return ['cid'=>$row['views']];
+    } else {
+        echo $row['views'];
+    }
 }
 
 function cartoon($url,$sum_c=1){
@@ -508,8 +512,8 @@ function man_hua_niu($url, $sum_c){
 
 function mh1234_mh8($url, $sum_c){
     //漫画列表
-    $url_list = 'https://www.mh1234.com/comic/16289.html';
-    $mip_7edm_url = curl($url_list);
+//    $url_list = 'https://www.mh1234.com/comic/16289.html';
+    $mip_7edm_url = curl($url);
     preg_match_all("/<ul id=\"chapter-list-1\" data-sort=\"asc\">.*?>.*?<\/ul>/ism",$mip_7edm_url,$mip_7edm_list);
     //目录跳转地址
     preg_match_all("/<a(s*[^>]+s*)href=([\"|']?)([^\"'>\s]+)([\"|']?)/ies",$mip_7edm_list[0][0],$mip_7edm_a);
@@ -626,33 +630,17 @@ function getPermalinkFromCoid($coid)
  */
 function pageArchives($post)
 {
-    static $lastY = null,
-    $lastM = null;
-    $t = $post->created;
-    $href = $post->permalink;//F jS, Y
+    $created = $post->created;
+    $href = $post->permalink;
     $title = $post->title;
-    $y = date('Y', $t) . ' 年';
-    $m = date('m', $t) . ' 月';
-    $d = date('jS', $t) . ' 日';
-    $t_href = Helper::options()->siteUrl . date('Y/m', $t);
-    $html = '';
-    if ($lastY == date('Y', $t) || $lastY == null) {
-        if ($lastM != date('m', $t)) {
-            $lastM = date('m', $t);
-            $html .="<div data-v-06bf989f=\"\" class=\"leading\"><i data-v-06bf989f=\"\" aria-hidden=\"true\" class=\"fa fa-clock-o\"></i><span data-v-06bf989f=\"\">$y $m</span></div>";
-        }
-    } else {
-        $lastY = date('Y', $t);
-    }
-    $html .=' <div data-v-06bf989f="" class="one-timeline el-row el-row--flex" style="margin-left: -5px; margin-right: -5px;">
-                <div data-v-06bf989f="" class="one-time el-col el-col-6 el-col-offset-2" style="padding-left: 5px; padding-right: 5px;">
-                    '.$d.'
-                </div>
-                <div data-v-06bf989f="" class="one-title el-col el-col-16" style="padding-left: 5px; padding-right: 5px;">
-                    <a data-v-06bf989f="" href="' . $href . '" class=""> ' . $title . ' </a>
-                </div>
-            </div>';
-    echo $html;
+    $arr_page = [
+        'cid' => $post->cid,
+        'title' => $title,
+        'href' => $href,
+        'created' => $created,
+        'created_y' => date('m',$created),
+    ];
+    return $arr_page;
 }
 
 /**
